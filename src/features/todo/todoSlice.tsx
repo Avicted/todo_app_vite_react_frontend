@@ -14,12 +14,14 @@ export interface ITodoItem {
     status: TodoItemStatus;
 }
 
-// Same as `ITodoItem`, but without the `id` field
 export interface ICreateTodoItem {
     name: string;
     description?: string;
     status: TodoItemStatus;
 }
+
+export interface IUpdateTodoItem extends ICreateTodoItem { }
+
 
 // Define a type for the slice state
 interface TodoState {
@@ -33,8 +35,7 @@ const initialState: TodoState = {
 
 export const todoSlice = createSlice({
     name: 'todo',
-    // `createSlice` will infer the state type from the `initialState` argument
-    initialState,
+    initialState, // `createSlice` will infer the state type from the `initialState` argument
     reducers: {
         setTodos: (state, action: PayloadAction<ITodoItem[]>) => {
             state.items = action.payload

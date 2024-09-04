@@ -31,16 +31,27 @@ export const UpdateTodoItemModal = (props: UpdateTodoItemModalProps) => {
 
             const updated = await updateTodoMutation({ id: todoItem.id, data: updatedTodo }).unwrap();
             dispatch(updateTodo(updated));
-            setShowUpdateModal(false);
+            closeModal()
         } catch (err) {
             console.error('Failed to update the todo:', err);
         }
     }
 
+    const closeModal = () => {
+        setShowUpdateModal(false);
+    };
+
     return (
         <>
             {showUpdateModal && (
-                <Dialog open={showUpdateModal} onClose={() => setShowUpdateModal(false)} className="relative z-10">
+                <Dialog
+                    open={showUpdateModal}
+                    onClose={closeModal}
+                    onClick={(e: React.MouseEvent) => {
+                        closeModal()
+
+                    }} // Prevent the ViewTodoItemModal from opening
+                    className="relative z-10">
                     <DialogBackdrop
                         transition
                         className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"
@@ -112,7 +123,10 @@ export const UpdateTodoItemModal = (props: UpdateTodoItemModalProps) => {
                                     </button>
                                     <button
                                         type="button"
-                                        onClick={() => setShowUpdateModal(false)}
+                                        onClick={(e) => {
+                                            e.stopPropagation(); // Stop propagation here
+                                            closeModal();
+                                        }}
                                         className="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto"
                                     >
                                         Cancel
@@ -121,7 +135,7 @@ export const UpdateTodoItemModal = (props: UpdateTodoItemModalProps) => {
                             </DialogPanel>
                         </div>
                     </div>
-                </Dialog>
+                </Dialog >
             )}
         </>
     )

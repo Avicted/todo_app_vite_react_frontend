@@ -44,7 +44,10 @@ export const CreateTodoItemModal = (props: CreateTodoItemModalProps) => {
     return (
         <>
             {showCreateModal && (
-                <Dialog open={showCreateModal} onClose={() => setShowCreateModal(false)} className="relative z-10">
+                <Dialog open={showCreateModal}
+                    onClose={() => setShowCreateModal(false)}
+                    className="relative z-10">
+
                     <DialogBackdrop
                         transition
                         className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"

@@ -73,6 +73,7 @@ export default function Todos() {
     }, [apiTodos, dispatch]);
 
     const handleRemoveTodo = async (e: React.MouseEvent, id: number) => {
+        // @Note(Victor): Prevent the ViewTodoItemModal from opening
         e.stopPropagation();
 
         try {
@@ -84,18 +85,13 @@ export default function Todos() {
     }
 
     const handleShowUpdateModal = (e: React.MouseEvent, itemToUpdate: ITodoItem) => {
+        // @Note(Victor): Prevent the ViewTodoItemModal from opening
         e.stopPropagation();
         setShowUpdateModal(true);
         setItemToUpdate(itemToUpdate);
     }
 
     const handleShowViewTodoItemModal = (e: React.MouseEvent, item: ITodoItem) => {
-        if (showUpdateModal || showCreateModal) {
-            // Prevent further actions if any modal is open
-            e.stopPropagation();
-            return;
-        }
-
         setSelectedTodoItem(item);
         setShowItemModal(true);
     };

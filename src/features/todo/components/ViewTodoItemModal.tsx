@@ -1,7 +1,6 @@
 import { Dialog, DialogBackdrop, DialogPanel, DialogTitle } from "@headlessui/react"
-import { ITodoItem } from "../todo/todoSlice"
-import { getTodoItemStatusBadge } from "../todo/Todos"
-import React from "react"
+import { ITodoItem } from "../../todo/todoSlice"
+import { getTodoItemStatusBadge } from "../../todo/Todos"
 
 interface ViewTodoItemModalProps {
     showViewModal: boolean,

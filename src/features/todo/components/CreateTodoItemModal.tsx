@@ -1,9 +1,8 @@
 import React from "react";
 import { Dialog, DialogBackdrop, DialogPanel, DialogTitle } from "@headlessui/react"
-import { addTodo, ICreateTodoItem, TodoItemStatus } from "../todo/todoSlice"
-import { useAppDispatch } from "../../hooks";
-import { useAddTodoMutation } from "../../services/TodoAPI";
-
+import { addTodo, ICreateTodoItem, TodoItemStatus } from "../todoSlice";
+import { useAppDispatch } from "../../../hooks.ts";
+import { useAddTodoMutation } from "../../../services/TodoAPI";
 
 interface CreateTodoItemModalProps {
     showCreateModal: boolean,

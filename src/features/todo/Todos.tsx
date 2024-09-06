@@ -2,10 +2,10 @@ import React, { useEffect } from 'react';
 import { useAppSelector, useAppDispatch } from '../../hooks';
 import { removeTodo, getTodos, ITodoItem, setTodos, TodoItemStatus } from './todoSlice';
 import { useGetTodosQuery, useRemoveTodoMutation } from '../../services/TodoAPI';
-import { CreateTodoItemModal } from '../components/CreateTodoItemModal';
-import { UpdateTodoItemModal } from '../components/UpdateTodoItemModal';
+import { CreateTodoItemModal } from './components/CreateTodoItemModal';
+import { UpdateTodoItemModal } from './components/UpdateTodoItemModal';
 import { Toast } from '../../Toast';
-import { ViewTodoItemModal } from '../components/ViewTodoItemModal';
+import { ViewTodoItemModal } from './components/ViewTodoItemModal';
 
 export const getTodoItemStatusBadge = (status: TodoItemStatus) => {
     switch (status) {

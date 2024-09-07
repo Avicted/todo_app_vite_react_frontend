@@ -23,7 +23,7 @@ export const CreateTodoItemModal = (props: CreateTodoItemModalProps) => {
         console.log('Creating todo:', newTodoName, newTodoDescription, newTodoStatus);
 
         const newTodo: ICreateTodoItem = {
-            name: newTodoName,
+            title: newTodoName,
             description: newTodoDescription,
             status: newTodoStatus,
         };

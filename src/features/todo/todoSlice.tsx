@@ -9,13 +9,13 @@ export enum TodoItemStatus {
 
 export interface ITodoItem {
     id: number;
-    name: string;
+    title: string;
     description?: string;
     status: TodoItemStatus;
 }
 
 export interface ICreateTodoItem {
-    name: string;
+    title: string;
     description?: string;
     status: TodoItemStatus;
 }
@@ -45,10 +45,10 @@ export const todoSlice = createSlice({
             state.items.push(action.payload)
         },
         updateTodo: (state, action: PayloadAction<ITodoItem>) => {
-            const { id, name, description, status } = action.payload
+            const { id, title: name, description, status } = action.payload
             const existingTodo = state.items.find((todo) => todo.id === id)
             if (existingTodo) {
-                existingTodo.name = name
+                existingTodo.title = name
                 existingTodo.description = description
                 existingTodo.status = status
             }

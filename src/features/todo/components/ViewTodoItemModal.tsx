@@ -31,7 +31,7 @@ export const ViewTodoItemModal = (props: ViewTodoItemModalProps) => {
                                         <div className="mt-3 text-center sm:ml-4 sm:mt-0 sm:text-left flex flex-col grow">
                                             <span className="flex">
                                                 <DialogTitle as="h3" className="flex text-base font-semibold leading-6 text-gray-900">
-                                                    {todoItem.name}
+                                                    {todoItem.title}
                                                     <p className="ml-6 flex text-md text-gray-500">
                                                         {getTodoItemStatusBadge(todoItem.status)}
                                                     </p>
@@ -41,9 +41,6 @@ export const ViewTodoItemModal = (props: ViewTodoItemModalProps) => {
                                                 <p className="text-md text-gray-500">
                                                     {todoItem.description}
                                                 </p>
-
-
-
                                             </div>
                                         </div>
                                     </div>

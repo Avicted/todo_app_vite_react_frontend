@@ -14,7 +14,7 @@ export const UpdateTodoItemModal = (props: UpdateTodoItemModalProps) => {
     const { showUpdateModal, setShowUpdateModal, todoItem } = props
     const dispatch = useAppDispatch();
 
-    const [newTodoName, setNewTodoName] = React.useState(todoItem.name);
+    const [newTodoName, setNewTodoName] = React.useState(todoItem.title);
     const [newTodoDescription, setNewTodoDescription] = React.useState(todoItem.description);
     const [newTodoStatus, setNewTodoStatus] = React.useState(todoItem.status);
 
@@ -23,7 +23,7 @@ export const UpdateTodoItemModal = (props: UpdateTodoItemModalProps) => {
     const handleUpdateTodo = async () => {
         try {
             const updatedTodo: IUpdateTodoItem = {
-                name: newTodoName,
+                title: newTodoName,
                 description: newTodoDescription,
                 status: newTodoStatus,
             };

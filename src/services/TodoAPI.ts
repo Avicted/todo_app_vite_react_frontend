@@ -3,12 +3,16 @@ import { createApi } from '@reduxjs/toolkit/query/react'
 import type { ITodoItem } from '../features/todo/todoSlice'
 import { baseQueryWithReauth } from './AuthenticationAPI'
 
+export interface TodoResponse {
+  todoItems: ITodoItem[];
+}
+
 // Define a service using a base URL and expected endpoints
 export const todoAPI = createApi({
     reducerPath: 'todoAPI',
     baseQuery: baseQueryWithReauth,
     endpoints: (builder) => ({
-      getTodos: builder.query<ITodoItem[], string>({
+      getTodos: builder.query<TodoResponse, string>({
         query: (id: string) => `/todos/${id}`,
       }),
       addTodo: builder.mutation<ITodoItem, Partial<ITodoItem>>({

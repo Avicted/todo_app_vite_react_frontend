@@ -1,4 +1,43 @@
+import { useState } from "react";
+import { useAppDispatch } from "../../hooks";
+import { IUser, login } from "./authenticationSlice";
+import { useLoginMutation } from "../../services/AuthenticationAPI";
+import { useNavigate } from "react-router-dom";
+
 export default function Login() {
+    const dispatch = useAppDispatch();
+    const navigate = useNavigate();
+
+    const [loginRequest] = useLoginMutation(); // Use login mutation hook
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+
+    // Handle input changes for email and password
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const { name, value } = e.target;
+        if (name === 'email') {
+            setEmail(value);
+        } else if (name === 'password') {
+            setPassword(value);
+        }
+    };
+
+    // Handle login request
+    const handleLoginRequest = async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+
+        try {
+            const user: IUser = await loginRequest({ email, password }).unwrap(); // Unwrap to handle promise rejection
+            dispatch(login(user as IUser)); // Dispatch the user data to the store
+
+            console.log('User:', user);
+
+            navigate("/")
+        } catch (err) {
+            console.error('Login request failed:', err);
+        }
+    };
+
     return (
         <>
             <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
@@ -14,13 +53,14 @@ export default function Login() {
                 </div>
 
                 <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-                    <form action="#" method="POST" className="space-y-6">
+                    <form action="#" method="POST" onSubmit={handleLoginRequest} className="space-y-6">
                         <div>
                             <label htmlFor="email" className="block text-sm font-medium leading-6 text-white">
                                 Email address
                             </label>
                             <div className="mt-2">
                                 <input
+                                    onChange={handleChange}
                                     id="email"
                                     name="email"
                                     type="email"
@@ -44,6 +84,7 @@ export default function Login() {
                             </div>
                             <div className="mt-2">
                                 <input
+                                    onChange={handleChange}
                                     id="password"
                                     name="password"
                                     type="password"

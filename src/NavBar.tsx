@@ -2,24 +2,27 @@ import { Disclosure, DisclosureButton, DisclosurePanel, Menu, MenuButton, MenuIt
 import { Bars3Icon, BellIcon, XMarkIcon } from '@heroicons/react/24/outline'
 import { PlusIcon } from '@heroicons/react/20/solid'
 import { useAppSelector, useAppDispatch } from './hooks'
+import { Link, useNavigate } from 'react-router-dom'
+import { logout } from './features/authentication/authenticationSlice'
 
 const navigation = [
     { name: 'Home', href: '/', current: true },
     { name: 'Todos', href: '/todos', current: false, requiresAuth: true },
 ]
 const userNavigation = [
-    { name: 'Your Profile', href: '#' },
-    { name: 'Settings', href: '#' },
-    { name: 'Sign out', href: '#' },
+    // { name: 'Your Profile', href: '#' },
+    // { name: 'Settings', href: '#' },
+    { name: 'Logout', href: '/' },
 ]
 
 function classNames(...classes: string[]) {
     return classes.filter(Boolean).join(' ')
 }
 
-export default function Example() {
+export default function NavBar() {
     const user = useAppSelector((state) => state.authentication.user);
     const dispatch = useAppDispatch();
+    const navigate = useNavigate();
 
     return (
         <Disclosure as="nav" className="bg-gray-800">
@@ -46,17 +49,16 @@ export default function Example() {
                             {navigation.map((item) => (
                                 <div key={item.name}>
                                     {(item.requiresAuth && !user) ? null : (
-                                        <a
+                                        <Link
                                             key={item.name}
-                                            href={item.href}
-                                            aria-current={item.current ? 'page' : undefined}
+                                            to={item.href}
                                             className={classNames(
                                                 item.current ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white',
                                                 'rounded-md px-3 py-2 text-sm font-medium',
                                             )}
                                         >
                                             {item.name}
-                                        </a>)}
+                                        </Link>)}
                                 </div>
                             ))}
                         </div>
@@ -128,6 +130,12 @@ export default function Example() {
                                 item.current ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white',
                                 'block rounded-md px-3 py-2 text-base font-medium',
                             )}
+                            onClick={item.name === 'Logout' ? () => {
+                                dispatch(logout())
+
+                                // Redirect to home
+                                navigate('/')
+                            } : undefined}
                         >
                             {item.name}
                         </DisclosureButton>

@@ -1,6 +1,6 @@
 // Need to use the React-specific entry point to import createApi
 import { BaseQueryApi, createApi, FetchArgs, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
-import { ILoginRequest } from '../features/authentication/authenticationSlice'
+import { ILoginRequest, IRegisterNewUserRequest, IUser } from '../features/authentication/authenticationSlice'
 
  // Helper function to refresh token
  export async function refreshAccessToken() {
@@ -26,7 +26,8 @@ import { ILoginRequest } from '../features/authentication/authenticationSlice'
 export const baseQueryWithReauth = async (args: string | FetchArgs, api: BaseQueryApi, extraOptions: {}) => {
     let accessToken = localStorage.getItem('accessToken')
   
-    // Add the authorization header
+    console.log('Access Token:', accessToken); // Log token for debugging
+  
     const result = await fetchBaseQuery({
       baseUrl: 'http://localhost:1337/api',
       prepareHeaders: (headers) => {
@@ -37,11 +38,9 @@ export const baseQueryWithReauth = async (args: string | FetchArgs, api: BaseQue
       },
     })(args, api, extraOptions)
   
-    // If we get a 401, try to refresh the token
     if (result?.error?.status === 401) {
       const newAccessToken = await refreshAccessToken()
       if (newAccessToken) {
-        // Retry the original query with new access token
         accessToken = newAccessToken
         localStorage.setItem('accessToken', newAccessToken)
         return fetchBaseQuery({
@@ -57,20 +56,19 @@ export const baseQueryWithReauth = async (args: string | FetchArgs, api: BaseQue
     return result
 }
 
-
 // Define a service using a base URL and expected endpoints
-const authenticationAPI = createApi({
+export const authenticationAPI = createApi({
     reducerPath: 'authenticationAPI',
     baseQuery: baseQueryWithReauth,
     endpoints: (builder) => ({
-      login: builder.mutation<{ accessToken: string, refreshToken: string }, ILoginRequest>({
+      login: builder.mutation<IUser, ILoginRequest>({
         query: (body) => ({
-          url: '/login',
+          url: '/custom-login',
           method: 'POST',
           body,
         }),
       }),
-      register: builder.mutation<{ accessToken: string, refreshToken: string }, { email: string, password: string }>({
+      register: builder.mutation<IUser, IRegisterNewUserRequest>({
         query: (body) => ({
           url: '/register',
           method: 'POST',

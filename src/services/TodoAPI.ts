@@ -8,8 +8,8 @@ export const todoAPI = createApi({
     reducerPath: 'todoAPI',
     baseQuery: baseQueryWithReauth,
     endpoints: (builder) => ({
-      getTodos: builder.query<ITodoItem[], void>({
-        query: () => '/todos',
+      getTodos: builder.query<ITodoItem[], string>({
+        query: (id: string) => `/todos/${id}`,
       }),
       addTodo: builder.mutation<ITodoItem, Partial<ITodoItem>>({
         query: (body) => ({

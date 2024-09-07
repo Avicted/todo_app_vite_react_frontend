@@ -5,6 +5,7 @@ import { useGetTodosQuery, useRemoveTodoMutation } from '../../services/TodoAPI'
 import { CreateTodoItemModal } from './components/CreateTodoItemModal';
 import { UpdateTodoItemModal } from './components/UpdateTodoItemModal';
 import { ViewTodoItemModal } from './components/ViewTodoItemModal';
+import { skipToken } from '@reduxjs/toolkit/query';
 
 export const getTodoItemStatusBadge = (status: TodoItemStatus) => {
     switch (status) {
@@ -40,6 +41,7 @@ export const getTodoItemStatusBadge = (status: TodoItemStatus) => {
 }
 
 export default function Todos() {
+    const user = useAppSelector((state) => state.authentication.user);
     const todos = useAppSelector((state) => getTodos(state));
     const dispatch = useAppDispatch();
 
@@ -50,7 +52,10 @@ export default function Todos() {
     const [itemToUpdate, setItemToUpdate] = React.useState<ITodoItem | null>(null);
     const [selectedTodoItem, setSelectedTodoItem] = React.useState<ITodoItem | null>(null);
 
-    const { data: apiTodos = [], error, isLoading } = useGetTodosQuery();
+    // Conditional query based on user ID
+    const { data: apiTodos = [], error, isLoading } = useGetTodosQuery(user?.id || skipToken, {
+        skip: !user?.id // Skip the query if user ID is not available
+    });
 
     const [removeTodoMutation] = useRemoveTodoMutation();
 

@@ -3,6 +3,8 @@ import todoSlice from './features/todo/todoSlice'
 import { todoAPI } from './services/TodoAPI'
 import { setupListeners } from '@reduxjs/toolkit/query'
 import authenticationSlice from './features/authentication/authenticationSlice'
+import { authenticationAPI } from './services/AuthenticationAPI'
+import { usersAPI } from './services/UsersAPI'
 
 
 /**
@@ -36,15 +38,21 @@ export const store = configureStore({
   reducer: {
     todoAPI: todoAPI.reducer,
     todos: todoSlice,
+
+    usersAPI: usersAPI.reducer,
+    
+    authenticationAPI: authenticationAPI.reducer,
     authentication: authenticationSlice,
   },
 
   // Adding the api middleware enables caching, invalidation, polling,
   // and other useful features of `rtk-query`.
-  middleware: (getDefaultMiddleware) => 
+  middleware: (getDefaultMiddleware: any) =>
     getDefaultMiddleware()
-    .concat(todoAPI.middleware)
-    .concat(rtkQueryErrorLogger),
+      .concat(todoAPI.middleware)
+      .concat(authenticationAPI.middleware)
+      .concat(usersAPI.middleware)
+      .concat(rtkQueryErrorLogger),
 })
 
 // optional, but required for refetchOnFocus/refetchOnReconnect behaviors

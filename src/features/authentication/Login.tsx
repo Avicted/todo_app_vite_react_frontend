@@ -29,7 +29,15 @@ export default function Login() {
 
         try {
             const user: IUser = await loginRequest({ email, password }).unwrap(); // Unwrap to handle promise rejection
-            dispatch(login(user as IUser)); // Dispatch the user data to the store
+            // dispatch(login(user as IUser)); // Dispatch the user data to the store
+
+            dispatch(login({
+                accessToken: user.accessToken, refreshToken: user.refreshToken,
+                id: user.id,
+                email: user.email,
+                tokenType: user.tokenType,
+                expiresIn: user.expiresIn
+            }));
 
             console.log('User:', user);
 

@@ -2,8 +2,6 @@ import { BrowserRouter as Router, Routes, Route, useNavigate } from 'react-route
 import './App.css';
 import { IUser } from './features/authentication/authenticationSlice';
 import { jwtDecode } from 'jwt-decode';
-import { useDispatch } from 'react-redux';
-import { useEffect } from 'react';
 import Layout from './Layout';
 import AuthenticationPage from './features/authentication/AuthenticationPage';
 import Login from './features/authentication/Login';

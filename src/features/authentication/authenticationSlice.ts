@@ -1,6 +1,18 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import type { RootState } from '../../store'
 
+// An general interface for the API error format
+export interface APIError {
+    status: number;
+    data: {
+        type: string;
+        title: string;
+        status: number;
+        errors?: {
+            [key: string]: string[]; // Error fields and their messages
+        };
+    };
+}
 
 export interface IRegisterRequest {   
     email: string;
@@ -47,6 +59,9 @@ export const authenticationSlice = createSlice({
     name: 'authentication',
     initialState,
     reducers: {
+        register: (_state, _action: PayloadAction<IUser>) => {
+           // No need to do anything here
+        },
         login: (state, action: PayloadAction<IUser>) => {
             state.isAuthenticated = true;
             state.user = action.payload;
@@ -68,7 +83,7 @@ export const authenticationSlice = createSlice({
     },
 })
 
-export const { login, logout, setUserInformation } = authenticationSlice.actions
+export const { register, login, logout, setUserInformation } = authenticationSlice.actions
 
 export const IsAuthenticated = (state: RootState) => state.authentication.isAuthenticated
 

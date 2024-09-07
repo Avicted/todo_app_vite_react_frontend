@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useAppDispatch } from "../../hooks";
-import { IUser, login } from "./authenticationSlice";
+import { APIError, IUser, login } from "./authenticationSlice";
 import { useLoginMutation } from "../../services/AuthenticationAPI";
 import { useNavigate } from "react-router-dom";
 
@@ -11,6 +11,7 @@ export default function Login() {
     const [loginRequest] = useLoginMutation(); // Use login mutation hook
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [errors, setErrors] = useState<string[]>([]);
 
     // Handle input changes for email and password
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -34,7 +35,26 @@ export default function Login() {
 
             navigate("/")
         } catch (err) {
-            console.error('Login request failed:', err);
+            if (err && typeof err === 'object' && 'data' in err) {
+                const apiError: APIError = err as APIError;
+                console.error('Login request failed:', apiError);
+
+                // Access the errors field within the data object
+                if (apiError.data.errors) {
+                    for (const [key, messages] of Object.entries(apiError.data.errors)) {
+                        messages.forEach(message => {
+                            console.error(`${key}: ${message}`)
+
+                            // Add the error message to the errors state
+                            setErrors([...errors, `${key}: ${message}`]);
+                        });
+                    }
+                } else {
+                    console.error(`Error ${apiError.data.status}: ${apiError.data.title}`);
+                }
+            } else {
+                console.error('Unexpected error:', err);
+            }
         }
     };
 
@@ -104,6 +124,18 @@ export default function Login() {
                             </button>
                         </div>
                     </form>
+                    <div className="mt-4">
+                        {errors.length > 0 && (
+                            <div className="bg-red-100 border-l-4 border-red-500 text-red-700 p-4" role="alert">
+                                <p className="font-bold">There were some errors with your submission</p>
+                                <ul>
+                                    {errors.map((error, index) => (
+                                        <li key={index}>{error}</li>
+                                    ))}
+                                </ul>
+                            </div>
+                        )}
+                    </div>
                 </div>
             </div>
         </>

@@ -38,7 +38,6 @@ export interface IUserInformation {
 export interface IUser {   
     id: string,
     email: string;
-
     tokenType: string,
     accessToken: string;
     expiresIn: number,
@@ -48,19 +47,21 @@ export interface IUser {
 export interface IAuthState {
     isAuthenticated: boolean;
     user: IUser | null;
+    successfullyRegistered: boolean;
 }
 
 const initialState: IAuthState = {
-    isAuthenticated: false,
+    isAuthenticated: !!localStorage.getItem('accessToken'), // Check if the token exists
     user: null,
-}   
+    successfullyRegistered: false,
+}
 
 export const authenticationSlice = createSlice({
     name: 'authentication',
     initialState,
     reducers: {
-        register: (_state, _action: PayloadAction<IUser>) => {
-           // No need to do anything here
+        register: (state, _action: PayloadAction<IUser>) => {
+           state.successfullyRegistered = true;
         },
         login: (state, action: PayloadAction<IUser>) => {
             state.isAuthenticated = true;
@@ -68,12 +69,21 @@ export const authenticationSlice = createSlice({
 
             localStorage.setItem('accessToken', action.payload.accessToken);
             localStorage.setItem('refreshToken', action.payload.refreshToken);
+
+            state.successfullyRegistered = false;
         },
         logout: (state) => {
             state.isAuthenticated = false;
             state.user = null;
-            localStorage.removeItem('accessToken');
-            localStorage.removeItem('refreshToken');
+            
+            // localStorage.removeItem('accessToken');
+            // localStorage.removeItem('refreshToken');
+
+            state.successfullyRegistered = false;
+        },
+        setUserFromToken: (state, action: PayloadAction<IUser>) => {
+            state.isAuthenticated = true;
+            state.user = action.payload;
         },
         setUserInformation: (state, action: PayloadAction<IUserInformation>) => {
             if (state.user) {
@@ -83,8 +93,9 @@ export const authenticationSlice = createSlice({
     },
 })
 
-export const { register, login, logout, setUserInformation } = authenticationSlice.actions
+export const { register, login, logout, setUserFromToken, setUserInformation } = authenticationSlice.actions
 
 export const IsAuthenticated = (state: RootState) => state.authentication.isAuthenticated
+export const SuccessfullyRegistered = (state: RootState) => state.authentication.successfullyRegistered
 
 export default authenticationSlice.reducer

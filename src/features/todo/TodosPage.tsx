@@ -108,17 +108,10 @@ export default function Todos() {
         setShowItemModal(true);
     };
 
-
-    if (error) {
-        return <div>Oh no, there was an error</div>;
-    }
-
     if (isLoading) {
-        return <div>Loading...</div>;
-    }
-
-    if (!apiResponse) {
-        return null;
+        return <div className="text-center text-gray-500 py-8">
+            <p>Loading your todo items...</p>
+        </div>
     }
 
     return (
@@ -147,8 +140,10 @@ export default function Todos() {
                             todoItem={itemToUpdate}
                         />}
 
+
+
                     <div className="flex justify-between mb-8">
-                        <h1 className="text-3xl font-extrabold text-white">Todo Items</h1>
+                        <h1 className="text-3xl font-extrabold text-gray-900">Todo Items</h1>
                         <button
                             type="button"
                             className="rounded-md bg-green-500 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-green-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500"
@@ -158,7 +153,28 @@ export default function Todos() {
                         </button>
                     </div>
 
-                    <ul role="list" className="divide-y divide-gray-100 bg-white shadow-xl rounded-lg border border-slate-200">
+                    {/* If the user has no todo items, display a message */}
+                    {todos.length === 0 && (<div
+                        className="relative block w-full min-h-full rounded-lg border-2 border-dashed border-gray-900 p-12 text-center focus:outline-none focus:ring-2 focus:ring-gray-900 focus:ring-offset-2"
+                    >
+                        <svg
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 48 48"
+                            aria-hidden="true"
+                            className="mx-auto h-12 w-12 text-gray-900"
+                        >
+                            <path
+                                d="M8 14v20c0 4.418 7.163 8 16 8 1.381 0 2.721-.087 4-.252M8 14c0 4.418 7.163 8 16 8s16-3.582 16-8M8 14c0-4.418 7.163-8 16-8s16 3.582 16 8m0 0v14m0-4c0 4.418-7.163 8-16 8S8 28.418 8 24m32 10v6m0 0v6m0-6h6m-6 0h-6"
+                                strokeWidth={2}
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                            />
+                        </svg>
+                        <span className="mt-2 block text-sm font-semibold text-gray-900">Create new Todo Items</span>
+                    </div>)}
+
+                    <ul role="list" className="divide-y divide-gray-100 bg-white shadow-xl rounded-lg">
                         {todos.map((item: ITodoItem) => (
                             <li key={item.id}
                                 className="relative py-5 hover:bg-gray-100 cursor-pointer"
@@ -170,7 +186,7 @@ export default function Todos() {
                                         <div className="flex min-w-0 gap-x-4"></div>
                                         <div className="min-w-0 flex-auto">
                                             <span className="flex justify-content">
-                                                <p className="mr-4 flex text-md leading-5 text-gray-500">
+                                                <p className="mr-4 flex text-md leading-5 text-gray-500" style={{ minWidth: '110px' }}>
                                                     {getTodoItemStatusBadge(item.status)}
                                                 </p>
                                                 <p className="flex text-lg font-semibold leading-6 text-gray-900 truncate ...">

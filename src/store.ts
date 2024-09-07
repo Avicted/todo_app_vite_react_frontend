@@ -3,6 +3,7 @@ import todoSlice from './features/todo/todoSlice'
 import { todoAPI } from './services/TodoAPI'
 import { setupListeners } from '@reduxjs/toolkit/query'
 import { Toast } from './Toast'
+import authenticationSlice from './features/authentication/authenticationSlice'
 
 
 /**
@@ -36,10 +37,9 @@ export const store = configureStore({
   reducer: {
     todoAPI: todoAPI.reducer,
     todos: todoSlice,
-    // posts: postsReducer,
-    // comments: commentsReducer,
-    // users: usersReducer,
+    authentication: authenticationSlice,
   },
+  
   // Adding the api middleware enables caching, invalidation, polling,
   // and other useful features of `rtk-query`.
   middleware: (getDefaultMiddleware) => 

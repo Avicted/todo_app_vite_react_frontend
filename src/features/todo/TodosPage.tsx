@@ -4,7 +4,6 @@ import { removeTodo, getTodos, ITodoItem, setTodos, TodoItemStatus } from './tod
 import { useGetTodosQuery, useRemoveTodoMutation } from '../../services/TodoAPI';
 import { CreateTodoItemModal } from './components/CreateTodoItemModal';
 import { UpdateTodoItemModal } from './components/UpdateTodoItemModal';
-import { Toast } from '../../Toast';
 import { ViewTodoItemModal } from './components/ViewTodoItemModal';
 
 export const getTodoItemStatusBadge = (status: TodoItemStatus) => {

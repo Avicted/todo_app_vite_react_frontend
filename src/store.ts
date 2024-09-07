@@ -2,7 +2,6 @@ import { configureStore, isRejectedWithValue, Middleware, MiddlewareAPI } from '
 import todoSlice from './features/todo/todoSlice'
 import { todoAPI } from './services/TodoAPI'
 import { setupListeners } from '@reduxjs/toolkit/query'
-import { Toast } from './Toast'
 import authenticationSlice from './features/authentication/authenticationSlice'
 
 
@@ -10,7 +9,7 @@ import authenticationSlice from './features/authentication/authenticationSlice'
  * Log a warning and error message when an RTK Query action is rejected.
  */
 export const rtkQueryErrorLogger: Middleware =
-  (api: MiddlewareAPI) => (next) => (action) => {
+  (_api: MiddlewareAPI) => (next) => (action) => {
     // RTK Query uses `createAsyncThunk` from redux-toolkit under the hood, so we're able to utilize these matchers!
     if (isRejectedWithValue(action)) {
       console.warn('We got a rejected action!')
@@ -39,7 +38,7 @@ export const store = configureStore({
     todos: todoSlice,
     authentication: authenticationSlice,
   },
-  
+
   // Adding the api middleware enables caching, invalidation, polling,
   // and other useful features of `rtk-query`.
   middleware: (getDefaultMiddleware) => 

@@ -75,6 +75,14 @@ export const store = configureStore({
     .concat(rtkQueryErrorLogger),
 })
 
+// @Note(Victor): This is a workaround to clear the localStorage when the user logs out
+store.subscribe(() => {
+    const state = store.getState();
+    if (state.authentication.user === null) {
+        storage.removeItem('persist:root');
+    }
+});
+
 // optional, but required for refetchOnFocus/refetchOnReconnect behaviors
 // see `setupListeners` docs - takes an optional callback as the 2nd arg for customization
 setupListeners(store.dispatch)

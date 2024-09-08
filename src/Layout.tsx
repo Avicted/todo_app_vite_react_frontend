@@ -4,6 +4,7 @@ import { useDispatch } from 'react-redux';
 import { useGetOwnDetailsQuery, useRefreshMutation } from './services/AuthenticationAPI';
 import { useAuth } from './hooks';
 import { IRefreshTokenRequest, IUserInformation, setUserInformation } from './features/authentication/authenticationSlice';
+import { persistor } from './store'; // Import persistor if needed
 
 const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     const auth = useAuth();
@@ -15,45 +16,43 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     });
 
     // Refresh token mutation
-    const [refreshTokenRequest, { data: _refreshResponse }] = useRefreshMutation();
+    const [refreshTokenRequest] = useRefreshMutation();
 
-    // @Todo(Victor): Infinite loop, or at least it has some issues
     useEffect(() => {
         console.log('Layout useEffect:', auth.user, userData);
 
         const accessToken = localStorage.getItem('accessToken');
         const refreshToken = localStorage.getItem('refreshToken');
 
-        if (userData) {
-            dispatch(setUserInformation(userData as IUserInformation));
-        }
-
-        if (!auth.user && accessToken && refreshToken) {
-            // If the user is not authenticated, try to fetch user details
-            if (!isLoading && userData) {
+        try {
+            if (userData) {
                 dispatch(setUserInformation(userData as IUserInformation));
             }
 
-            // If accessToken is missing or expired, refresh the token
-            if (!accessToken || isError) {
-                console.log('Access token missing or invalid, refreshing token...');
-                const refreshRequest: IRefreshTokenRequest = { refreshToken: refreshToken };
-                refreshTokenRequest(refreshRequest)
-                    .then(response => {
-                        // Handle the response, e.g., update the access token in local storage
-                        localStorage.setItem('refreshToken', response.data?.refreshToken as string);
-                        console.log('Refresh token response:', response.data);
-                    })
-                    .catch(error => {
-                        console.error('Error refreshing token:', error);
-                    });
+            if (!auth.user && accessToken && refreshToken) {
+                if (isError) {
+                    console.log('Access token is invalid, refreshing token...');
+                    const refreshRequest: IRefreshTokenRequest = { refreshToken: refreshToken };
+                    refreshTokenRequest(refreshRequest)
+                        .unwrap()
+                        .then(response => {
+                            // Update the refresh token in localStorage
+                            localStorage.setItem('refreshToken', response.refreshToken as string);
+                            console.log('Refresh token response:', response);
+                        })
+                        .catch(error => {
+                            console.error('Error refreshing token:', error);
+                        });
+                } else if (userData && !isLoading) {
+                    dispatch(setUserInformation(userData as IUserInformation));
+                }
+            } else if (auth.user) {
+                dispatch(setUserInformation(auth.user));
             }
-        } else if (auth.user) {
-            console.log('User is authenticated:', auth.user);
-            // dispatch(setUserInformation(auth.user));
+        } catch (error) {
+            console.error('Error in useEffect:', error);
         }
-    }, [userData, dispatch, refreshTokenRequest]);
-
+    }, [auth.user, userData, isLoading, isError, dispatch, refreshTokenRequest]);
 
     return (
         <div>

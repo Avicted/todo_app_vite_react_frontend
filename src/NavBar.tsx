@@ -119,23 +119,24 @@ export default function NavBar() {
                                 item.current ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white',
                                 'block rounded-md px-3 py-2 text-base font-medium',
                             )}
-                            onClick={item.name === 'Logout' ? (e: React.MouseEvent) => {
+                            onClick={item.name === 'Logout' ? async (e: React.MouseEvent) => {
                                 e.preventDefault(); // Prevent default anchor behavior
 
+                                // Dispatch logout action
+                                dispatch(logout());
+
+                                // Clear tokens from localStorage
+                                localStorage.removeItem('accessToken');
+                                localStorage.removeItem('refreshToken');
+
                                 // Clear persisted state
-                                persistor.purge().then(() => {
-                                    console.error('Persisted state cleared');
+                                await persistor.purge();
 
-                                    // Optionally, clear tokens from localStorage/sessionStorage
-                                    localStorage.removeItem('accessToken');
-                                    localStorage.removeItem('refreshToken');
+                                // Optionally, clear any other related persisted keys manually
+                                localStorage.removeItem('persist:auth');
 
-                                    // Redirect to home
-                                    window.location.href = '/';
-                                }).catch((error) => {
-                                    console.error('Error clearing persisted state:', error);
-                                });
-
+                                // Redirect to login or home page
+                                window.location.href = '/login'; // Or use a navigation method if using react-router-dom
                                 // Dispatch logout action
                                 dispatch(logout());
                             } : undefined}

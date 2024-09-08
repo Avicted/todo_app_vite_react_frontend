@@ -3,6 +3,7 @@ import { Bars3Icon, BellIcon, XMarkIcon } from '@heroicons/react/24/outline'
 import { useAppSelector, useAppDispatch } from './hooks'
 import { Link, useNavigate } from 'react-router-dom'
 import { logout } from './features/authentication/authenticationSlice'
+import { persistor } from './store'
 
 const navigation = [
     { name: 'Home', href: '/', current: true },
@@ -21,7 +22,6 @@ function classNames(...classes: string[]) {
 export default function NavBar() {
     const user = useAppSelector((state) => state.authentication.user);
     const dispatch = useAppDispatch();
-    const navigate = useNavigate();
 
     return (
         <Disclosure as="nav" className="bg-gray-800">
@@ -83,7 +83,9 @@ export default function NavBar() {
                                         <MenuButton className="relative flex rounded-full bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800">
                                             <span className="absolute -inset-1.5" />
                                             <span className="sr-only">Open user menu</span>
-                                            <img alt="" src={'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80'} className="h-8 w-8 rounded-full" />
+                                            <svg className="w-8 h-8 text-gray-200 dark:text-gray-700" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                                                <path d="M10 0a10 10 0 1 0 10 10A10.011 10.011 0 0 0 10 0Zm0 5a3 3 0 1 1 0 6 3 3 0 0 1 0-6Zm0 13a8.949 8.949 0 0 1-4.951-1.488A3.987 3.987 0 0 1 9 13h2a3.987 3.987 0 0 1 3.951 3.512A8.949 8.949 0 0 1 10 18Z" />
+                                            </svg>
                                         </MenuButton>
                                     </div>
                                     <MenuItems
@@ -118,10 +120,13 @@ export default function NavBar() {
                                 'block rounded-md px-3 py-2 text-base font-medium',
                             )}
                             onClick={item.name === 'Logout' ? () => {
+                                // Clear the persisted state
+                                persistor.purge();
+
                                 dispatch(logout())
 
                                 // Redirect to home
-                                navigate('/')
+                                window.location.href = '/';
                             } : undefined}
                         >
                             {item.name}
@@ -131,7 +136,9 @@ export default function NavBar() {
                 <div className="border-t border-gray-700 pb-3 pt-4">
                     <div className="flex items-center px-5 sm:px-6">
                         <div className="flex-shrink-0">
-                            <img alt="" src={'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80'} className="h-10 w-10 rounded-full" />
+                            <svg className="w-8 h-8 text-gray-200 dark:text-gray-700" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M10 0a10 10 0 1 0 10 10A10.011 10.011 0 0 0 10 0Zm0 5a3 3 0 1 1 0 6 3 3 0 0 1 0-6Zm0 13a8.949 8.949 0 0 1-4.951-1.488A3.987 3.987 0 0 1 9 13h2a3.987 3.987 0 0 1 3.951 3.512A8.949 8.949 0 0 1 10 18Z" />
+                            </svg>
                         </div>
                         <div className="ml-3">
                             {/*<div className="text-base font-medium text-white">{user.name}</div>*/}

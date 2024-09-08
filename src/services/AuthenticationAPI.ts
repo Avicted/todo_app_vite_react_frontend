@@ -1,6 +1,6 @@
 // Need to use the React-specific entry point to import createApi
 import { BaseQueryApi, createApi, FetchArgs, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
-import { ILoginRequest, IRegisterNewUserRequest, IUser } from '../features/authentication/authenticationSlice'
+import { ILoginRequest, IRefreshTokenRequest, IRefreshTokenResponse, IRegisterNewUserRequest, IUser, IUserInformation } from '../features/authentication/authenticationSlice'
 
 
  // Helper function to refresh token
@@ -14,9 +14,13 @@ import { ILoginRequest, IRegisterNewUserRequest, IUser } from '../features/authe
         },
         body: JSON.stringify({ refreshToken }),
       })
+
+      console.log('Refresh token response:', response)
+
       if (response.ok) {
         const data = await response.json()
-        // localStorage.setItem('accessToken', data.accessToken)
+        console.log('Refresh token data:', data)
+        localStorage.setItem('accessToken', data.accessToken)
         return data.accessToken
       }
     }
@@ -27,7 +31,7 @@ import { ILoginRequest, IRegisterNewUserRequest, IUser } from '../features/authe
 export const baseQueryWithReauth = async (args: string | FetchArgs, api: BaseQueryApi, extraOptions: {}) => {
     let accessToken = localStorage.getItem('accessToken')
   
-    console.log('Access Token:', accessToken); // Log token for debugging
+    console.log('AuthenticationAPI Access Token:', accessToken); // Log token for debugging
   
     const result = await fetchBaseQuery({
       baseUrl: 'http://localhost:1337/api',
@@ -40,6 +44,8 @@ export const baseQueryWithReauth = async (args: string | FetchArgs, api: BaseQue
     })(args, api, extraOptions)
   
     if (result?.error?.status === 401) {
+      // return result;
+
       const newAccessToken = await refreshAccessToken()
       if (newAccessToken) {
         accessToken = newAccessToken
@@ -66,7 +72,8 @@ export const authenticationAPI = createApi({
         return ({
             login: builder.mutation<IUser, ILoginRequest>({
                 query: (body) => ({
-                    url: '/custom-login',
+                    // url: '/custom-login',
+                    url: '/login',
                     method: 'POST',
                     body,
                 }),
@@ -78,12 +85,16 @@ export const authenticationAPI = createApi({
                     body,
                 }),
             }),
-            getOwnDetails: builder.mutation<void, void>({
+            refresh: builder.mutation<IRefreshTokenResponse, IRefreshTokenRequest>({
+                query: (body) => ({
+                    url: '/refresh',
+                    method: 'POST',
+                    body,
+                }),
+            }),
+            getOwnDetails: builder.query<IUserInformation, null>({
                 query: () => ({
                     url: '/users/getowndetails',
-                    headers: {
-                        Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
-                    },
                 })
             }),
         })
@@ -93,6 +104,6 @@ export const authenticationAPI = createApi({
 
 // Export hooks for usage in functional components, which are
 // auto-generated based on the defined endpoints
-export const { useLoginMutation, useRegisterMutation, useGetOwnDetailsMutation } = authenticationAPI
+export const { useLoginMutation, useRegisterMutation, useRefreshMutation, useGetOwnDetailsQuery } = authenticationAPI
 
     

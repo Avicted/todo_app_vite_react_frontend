@@ -1,10 +1,11 @@
 import React, { useEffect } from 'react';
-import { useAppSelector, useAppDispatch } from '../../hooks';
+import { useAppSelector, useAppDispatch, useAuth } from '../../hooks';
 import { removeTodo, getTodos, ITodoItem, setTodos, TodoItemStatus } from './todoSlice';
 import { useGetTodosQuery, useRemoveTodoMutation } from '../../services/TodoAPI';
 import { CreateTodoItemModal } from './components/CreateTodoItemModal';
 import { UpdateTodoItemModal } from './components/UpdateTodoItemModal';
 import { ViewTodoItemModal } from './components/ViewTodoItemModal';
+import { useNavigate } from 'react-router-dom';
 
 export const getTodoItemStatusBadge = (status: TodoItemStatus) => {
     switch (status) {
@@ -43,6 +44,8 @@ export default function Todos() {
     const user = useAppSelector((state) => state.authentication.user);
     const todos = useAppSelector((state) => getTodos(state));
     const dispatch = useAppDispatch();
+    const auth = useAuth();
+    const navigate = useNavigate();
 
     const [showItemModal, setShowItemModal] = React.useState(false);
     const [showCreateModal, setShowCreateModal] = React.useState(false);
@@ -55,6 +58,13 @@ export default function Todos() {
     const { data: apiResponse, error, isLoading } = useGetTodosQuery(user?.id || '');
 
     const [removeTodoMutation] = useRemoveTodoMutation();
+
+    // Run the effect when the user is not authenticated
+    useEffect(() => {
+        if (!auth.user) {
+            navigate('/');
+        }
+    }, [auth]);
 
     // Log errors and loading state
     useEffect(() => {

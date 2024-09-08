@@ -8,6 +8,7 @@ import Login from './features/authentication/Login';
 import Register from './features/authentication/Register';
 import { HomePage } from './features/homepage/home';
 import Todos from './features/todo/TodosPage';
+import ErrorBoundary from './ErrorBoundry';
 
 
 export function decodeToken(token: string): IUser | null {
@@ -27,16 +28,18 @@ export function decodeToken(token: string): IUser | null {
 function App() {
   return (
     <Router>
-      <Layout>
-        <Routes>
-          <Route path="/" element={<HomePage />} />
-          <Route path="/authentication" element={<AuthenticationPage />}>
-            <Route path="login" element={<Login />} />
-            <Route path="register" element={<Register />} />
-          </Route>
-          <Route path="/todos" element={<Todos />} />
-        </Routes>
-      </Layout>
+      <ErrorBoundary>
+        <Layout>
+          <Routes>
+            <Route path="/" element={<HomePage />} />
+            <Route path="/authentication" element={<AuthenticationPage />}>
+              <Route path="login" element={<Login />} />
+              <Route path="register" element={<Register />} />
+            </Route>
+            <Route path="/todos" element={<Todos />} />
+          </Routes>
+        </Layout>
+      </ErrorBoundary>
     </Router>
   );
 }

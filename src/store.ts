@@ -5,6 +5,8 @@ import { setupListeners } from '@reduxjs/toolkit/query'
 import authenticationSlice from './features/authentication/authenticationSlice'
 import { authenticationAPI } from './services/AuthenticationAPI'
 import { usersAPI } from './services/UsersAPI'
+import { persistReducer, persistStore } from 'redux-persist';
+import storage from 'redux-persist/lib/storage'; // defaults to localStorage
 
 
 /**
@@ -32,7 +34,20 @@ export const rtkQueryErrorLogger: Middleware =
     }
 
     return next(action)
-  }
+}
+
+// Persist config for the authentication slice
+const persistConfig = {
+  key: 'auth', // key for storing in localStorage
+  storage, // localStorage (you can replace this with sessionStorage if needed)
+  whitelist: [
+    'authentication', // only persist the authentication slice
+    'user', // only persist the user slice
+  ], // Only persist authentication slice
+};
+
+// Wrap the authentication slice with the persisted reducer
+const persistedAuthenticationReducer = persistReducer(persistConfig, authenticationSlice);
 
 export const store = configureStore({
   reducer: {
@@ -42,7 +57,7 @@ export const store = configureStore({
     usersAPI: usersAPI.reducer,
     
     authenticationAPI: authenticationAPI.reducer,
-    authentication: authenticationSlice,
+    authentication: persistedAuthenticationReducer, // Use persisted reducer
   },
 
   // Adding the api middleware enables caching, invalidation, polling,
@@ -58,6 +73,11 @@ export const store = configureStore({
 // optional, but required for refetchOnFocus/refetchOnReconnect behaviors
 // see `setupListeners` docs - takes an optional callback as the 2nd arg for customization
 setupListeners(store.dispatch)
+
+
+// Set up redux-persist's persistor
+export const persistor = persistStore(store);
+
 
 // Infer the `RootState` and `AppDispatch` types from the store itself
 export type RootState = ReturnType<typeof store.getState>

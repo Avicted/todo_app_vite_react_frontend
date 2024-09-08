@@ -46,7 +46,7 @@ export const UpdateTodoItemModal = (props: UpdateTodoItemModalProps) => {
                 <Dialog
                     open={showUpdateModal}
                     onClose={closeModal}
-                    onClick={(e: React.MouseEvent) => {
+                    onClick={(_e: React.MouseEvent) => {
                         closeModal()
 
                     }} // Prevent the ViewTodoItemModal from opening

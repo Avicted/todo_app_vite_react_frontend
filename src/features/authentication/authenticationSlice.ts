@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { persistor, type RootState } from '../../store'
+import { type RootState } from '../../store'
 
 // An general interface for the API error format
 export interface APIError {
@@ -84,9 +84,7 @@ export const authenticationSlice = createSlice({
 
             state.successfullyRegistered = false;
         },
-        logout: (state) => {
-            state.user = null;
-            
+        logout: (state) => {    
             console.log('Logging out user');
 
             // localStorage.removeItem('accessToken');

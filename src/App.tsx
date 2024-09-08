@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route, useNavigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import './App.css';
 import { IUser } from './features/authentication/authenticationSlice';
 import { jwtDecode } from 'jwt-decode';

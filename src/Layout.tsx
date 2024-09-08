@@ -15,7 +15,7 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     });
 
     // Refresh token mutation
-    const [refreshTokenRequest, { data: refreshResponse }] = useRefreshMutation();
+    const [refreshTokenRequest, { data: _refreshResponse }] = useRefreshMutation();
 
     useEffect(() => {
         const accessToken = localStorage.getItem('accessToken');

@@ -87,6 +87,8 @@ export const authenticationSlice = createSlice({
         logout: (state) => {    
             console.log('Logging out user');
 
+             state.user = null; // Clear user info
+
             // localStorage.removeItem('accessToken');
             // localStorage.removeItem('refreshToken');
        

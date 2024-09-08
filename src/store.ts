@@ -63,11 +63,16 @@ export const store = configureStore({
   // Adding the api middleware enables caching, invalidation, polling,
   // and other useful features of `rtk-query`.
   middleware: (getDefaultMiddleware: any) =>
-    getDefaultMiddleware()
-      .concat(todoAPI.middleware)
-      .concat(authenticationAPI.middleware)
-      .concat(usersAPI.middleware)
-      .concat(rtkQueryErrorLogger),
+    getDefaultMiddleware({
+        serializableCheck: {
+          ignoredActions: ['persist/PERSIST', 'persist/REHYDRATE'], // Ignore these actions
+          ignoredPaths: ['authentication', 'user'], // Ignore non-serializable paths if necessary
+        },
+    })
+    .concat(todoAPI.middleware)
+    .concat(authenticationAPI.middleware)
+    .concat(usersAPI.middleware)
+    .concat(rtkQueryErrorLogger),
 })
 
 // optional, but required for refetchOnFocus/refetchOnReconnect behaviors

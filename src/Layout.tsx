@@ -17,7 +17,10 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     // Refresh token mutation
     const [refreshTokenRequest, { data: _refreshResponse }] = useRefreshMutation();
 
+    // @Todo(Victor): Infinite loop, or at least it has some issues
     useEffect(() => {
+        console.log('Layout useEffect:', auth.user, userData);
+
         const accessToken = localStorage.getItem('accessToken');
         const refreshToken = localStorage.getItem('refreshToken');
 
@@ -47,9 +50,9 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
             }
         } else if (auth.user) {
             console.log('User is authenticated:', auth.user);
-            dispatch(setUserInformation(auth.user));
+            // dispatch(setUserInformation(auth.user));
         }
-    }, [auth.user, userData, dispatch, refreshTokenRequest]);
+    }, [userData, dispatch, refreshTokenRequest]);
 
 
     return (

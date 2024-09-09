@@ -113,7 +113,7 @@ export default function NavBar() {
                                             <MenuItem key={item.name}>
                                                 <a
                                                     href={item.href}
-                                                    onClick={item.name === 'Logout' ? async (e: React.MouseEvent) => {
+                                                    onClick={item.name === 'Logout' ? async (_e: React.MouseEvent) => {
                                                         handleLogout();
                                                     } : undefined}
                                                     className="block px-4 py-2 text-sm text-gray-700 data-[focus]:bg-gray-100">

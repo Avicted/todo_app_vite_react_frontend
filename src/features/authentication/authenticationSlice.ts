@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { persistor, type RootState } from '../../store'
+import { type RootState } from '../../store'
 import { PURGE } from 'redux-persist';
 
 // An general interface for the API error format

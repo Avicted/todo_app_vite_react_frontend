@@ -5,7 +5,7 @@ import { setupListeners } from '@reduxjs/toolkit/query'
 import authenticationSlice from './features/authentication/authenticationSlice'
 import { authenticationAPI } from './services/AuthenticationAPI'
 import { usersAPI } from './services/UsersAPI'
-import { FLUSH, PAUSE, PERSIST, persistReducer, persistStore, PURGE, REGISTER, REHYDRATE } from 'redux-persist';
+import { persistReducer, persistStore } from 'redux-persist';
 import storage from 'redux-persist/lib/storage'; // defaults to localStorage
 
 

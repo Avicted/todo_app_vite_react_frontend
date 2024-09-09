@@ -212,6 +212,7 @@ export default function Todos() {
                                         <div className="flex flex-row items-start px-4 space-x-2">
                                             <button
                                                 type="button"
+                                                name="update"
                                                 className="self-start rounded-md bg-purple-500 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-purple-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-purple-500"
                                                 onClick={(e: React.MouseEvent) => handleShowUpdateModal(e, item)}
                                             >
@@ -220,6 +221,7 @@ export default function Todos() {
 
                                             <button
                                                 type="button"
+                                                name="remove"
                                                 className="self-start rounded-md bg-red-500 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-500"
                                                 onClick={(e: React.MouseEvent) => handleRemoveTodo(e, item.id)}
                                             >

@@ -52,3 +52,44 @@ test('Create a new Todo Item', async ({ page }) => {
     // Expect the page to have the new todo item expectedTodoItemName
     await expect(page.locator('ul')).toContainText(expectedTodoItemName);
 });
+
+//  Update a Todo Item
+test('Update a Todo Item', async ({ page }) => {
+    // Login with known user
+    await page.goto('http://localhost:5173/authentication/login');
+
+    // Fill the form
+    await page.fill('input[name="email"]', `tester@test.tld` );
+    await page.fill('input[name="password"]', 'password123');
+
+    // Submit the form
+    await page.click('button[type="submit"]');
+
+    // wait for the page to load
+    await page.waitForLoadState('networkidle');
+    // ---------------------------------------------------------------------
+
+    await page.goto('http://localhost:5173/todos');
+
+    // Click the first todo items update button
+    // Find the button with name="update" in the ul list
+    await page.locator('ul >> li').first().locator('button[name="update"]').click();
+
+    // Update all fields
+    const expectedTodoItemName = `Test Todo Item updated by Playwright ${new Date().getTime()}`;
+    await page.fill('input[name="name"]', expectedTodoItemName);
+
+    await page.fill('textarea[name="description"]', 'This is a test todo item description updated by Playwright automatically :)');
+
+    // Choose a type
+    await page.selectOption('select[id="status"]', '0');
+
+    // Submit the form
+    await page.click('button[name="update-item"]');
+
+    // wait for the page to load
+    await page.waitForLoadState('networkidle');
+
+    // Expect the page to have the new todo item expectedTodoItemName
+    await expect(page.locator('ul')).toContainText(expectedTodoItemName);
+});

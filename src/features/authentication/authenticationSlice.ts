@@ -26,7 +26,7 @@ export interface IRefreshTokenResponse {
     refreshToken: string;
 }
 
-export interface IRegisterRequest {   
+export interface IRegisterRequest {
     email: string;
     password: string;
 }
@@ -36,8 +36,7 @@ export interface ILoginRequest {
     password: string;
 }
 
-export interface IRegisterNewUserRequest
-{
+export interface IRegisterNewUserRequest {
     email: string;
     password: string;
 }
@@ -47,7 +46,7 @@ export interface IUserInformation {
     email: string;
 }
 
-export interface IUser {   
+export interface IUser {
     id: string,
     email: string;
     tokenType: string,
@@ -71,7 +70,7 @@ export const authenticationSlice = createSlice({
     initialState,
     reducers: {
         register: (state, _action: PayloadAction<IUser>) => {
-           state.successfullyRegistered = true;
+            state.successfullyRegistered = true;
         },
         login: (state, action: PayloadAction<IUser>) => {
             state.user = action.payload;
@@ -85,23 +84,23 @@ export const authenticationSlice = createSlice({
 
             state.successfullyRegistered = false;
         },
-        logout: (state) => {    
+        logout: (state) => {
             console.log('Logging out user');
 
             state.user = null; // Clear user info
 
             localStorage.removeItem('accessToken');
             localStorage.removeItem('refreshToken');
-       
+
             // Clear entire localStorage
             localStorage.clear();
         },
         setUserInformation: (state, action: PayloadAction<IUserInformation>) => {
             if (state.user) {
-                console.log('Setting user information in the authenticationSlice:', action.payload);
+                console.log('authenticationSlice Setting user information in the authenticationSlice:', action.payload);
                 state.user.id = action.payload.id;
                 state.user.email = action.payload.email;
-                
+
                 if (localStorage.getItem('accessToken')) {
                     state.user.accessToken = localStorage.getItem('accessToken') as string;
                 }
@@ -119,7 +118,7 @@ export const authenticationSlice = createSlice({
     },
     extraReducers: (builder: { addCase: (arg0: string, arg1: () => IAuthState) => void; }) => {
         builder.addCase(PURGE, () => {
-          return initialState;
+            return initialState;
         });
     },
 })

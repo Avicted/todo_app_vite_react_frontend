@@ -14,16 +14,16 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
         skip: !localStorage.getItem('accessToken'),
     });
 
-    // Refresh token mutation
     const [refreshTokenRequest] = useRefreshMutation();
 
+    // @Note(Victor): Hook?
     useEffect(() => {
         const accessToken = localStorage.getItem('accessToken');
         const refreshToken = localStorage.getItem('refreshToken');
 
         // If auth.user exists, or userData has been fetched, proceed
         if (userData) {
-            console.log('Setting user information:', auth.user || userData);
+            console.log('Layout Setting user information:', auth.user || userData);
             var test: IUser = {
                 id: userData.id,
                 email: userData.email,

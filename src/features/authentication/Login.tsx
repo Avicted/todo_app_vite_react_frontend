@@ -3,7 +3,6 @@ import { useAppDispatch } from "../../hooks";
 import { APIError, IUser, login, setUserInformation } from "./authenticationSlice";
 import { authenticationAPI, useGetOwnDetailsQuery, useLoginMutation } from "../../services/AuthenticationAPI";
 import { useNavigate } from "react-router-dom";
-import { todo } from "node:test";
 import { todoAPI } from "../../services/TodoAPI";
 
 export default function Login() {

@@ -9,6 +9,9 @@ npm install
 npm run dev
 ```
 
+![Todo Items Page](Screenshot_TodoItems.png "Todo Items Page")
+![New Todo Item Modal](Screenshot_New_TodoItem.png "New Todo Item Modal")
+
 ---
 # Vite Documentation
 

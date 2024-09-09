@@ -5,7 +5,7 @@ import { setupListeners } from '@reduxjs/toolkit/query'
 import authenticationSlice from './features/authentication/authenticationSlice'
 import { authenticationAPI } from './services/AuthenticationAPI'
 import { usersAPI } from './services/UsersAPI'
-import { persistReducer, persistStore } from 'redux-persist';
+import { FLUSH, PAUSE, PERSIST, persistReducer, persistStore, PURGE, REGISTER, REHYDRATE } from 'redux-persist';
 import storage from 'redux-persist/lib/storage'; // defaults to localStorage
 
 
@@ -38,12 +38,12 @@ export const rtkQueryErrorLogger: Middleware =
 
 // Persist config for the authentication slice
 const persistConfig = {
-  key: 'auth', // key for storing in localStorage
-  storage, // localStorage (you can replace this with sessionStorage if needed)
+  key: 'auth',        // key for storing in localStorage
+  storage,            // localStorage (you can replace this with sessionStorage if needed)
   whitelist: [
     'authentication', // only persist the authentication slice
-    'user', // only persist the user slice
-  ], // Only persist authentication slice
+    'user',           // only persist the user slice
+  ],
 };
 
 // Wrap the authentication slice with the persisted reducer
@@ -64,10 +64,9 @@ export const store = configureStore({
   // and other useful features of `rtk-query`.
   middleware: (getDefaultMiddleware: any) =>
     getDefaultMiddleware({
-        serializableCheck: {
-          ignoredActions: ['persist/PERSIST', 'persist/REHYDRATE'], // Ignore these actions
-          ignoredPaths: ['authentication', 'user'], // Ignore non-serializable paths if necessary
-        },
+        serializableCheck: false, /*{ @Note(Victor): Redux-persist problem
+            ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
+        },*/
     })
     .concat(todoAPI.middleware)
     .concat(authenticationAPI.middleware)

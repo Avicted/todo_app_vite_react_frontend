@@ -1,5 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { type RootState } from '../../store'
+import { persistor, type RootState } from '../../store'
+import { PURGE } from 'redux-persist';
 
 // An general interface for the API error format
 export interface APIError {
@@ -87,29 +88,42 @@ export const authenticationSlice = createSlice({
         logout: (state) => {    
             console.log('Logging out user');
 
-             state.user = null; // Clear user info
+            state.user = null; // Clear user info
 
-            // localStorage.removeItem('accessToken');
-            // localStorage.removeItem('refreshToken');
+            localStorage.removeItem('accessToken');
+            localStorage.removeItem('refreshToken');
        
             // Clear entire localStorage
             localStorage.clear();
-
-            state.successfullyRegistered = false;
         },
         setUserInformation: (state, action: PayloadAction<IUserInformation>) => {
             if (state.user) {
                 console.log('Setting user information in the authenticationSlice:', action.payload);
                 state.user.id = action.payload.id;
                 state.user.email = action.payload.email;
+                
+                if (localStorage.getItem('accessToken')) {
+                    state.user.accessToken = localStorage.getItem('accessToken') as string;
+                }
+
+                if (localStorage.getItem('refreshToken')) {
+                    state.user.refreshToken = localStorage.getItem('refreshToken') as string;
+                }
+
                 // state.user.tokenType = action.payload.tokenType;
                 // state.user.accessToken = action.payload.accessToken;
                 // state.user.expiresIn = action.payload.expiresIn;
                 // state.user.refreshToken = action.payload.refreshToken;
             }
-        }
+        },
+    },
+    extraReducers: (builder: { addCase: (arg0: string, arg1: () => IAuthState) => void; }) => {
+        builder.addCase(PURGE, () => {
+          return initialState;
+        });
     },
 })
+
 
 export const { register, login, logout, setUserInformation } = authenticationSlice.actions
 

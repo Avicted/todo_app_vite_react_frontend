@@ -1,7 +1,7 @@
 import { Disclosure, DisclosureButton, DisclosurePanel, Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react'
-import { Bars3Icon, BellIcon, XMarkIcon } from '@heroicons/react/24/outline'
+import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline'
 import { useAppSelector, useAppDispatch } from './hooks'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { logout } from './features/authentication/authenticationSlice'
 import { persistor } from './store'
 
@@ -12,7 +12,7 @@ const navigation = [
 const userNavigation = [
     // { name: 'Your Profile', href: '#' },
     // { name: 'Settings', href: '#' },
-    { name: 'Logout', href: '/' },
+    { name: 'Logout', href: '#' },
 ]
 
 function classNames(...classes: string[]) {
@@ -22,6 +22,23 @@ function classNames(...classes: string[]) {
 export default function NavBar() {
     const user = useAppSelector((state) => state.authentication.user);
     const dispatch = useAppDispatch();
+    const navigate = useNavigate();
+
+    const handleLogout = async () => {
+        // e.preventDefault(); // Prevent default anchor behavior
+        console.log("Logging out user");
+
+        // Clear persisted state
+        await persistor.purge();
+
+        // Dispatch logout action
+        dispatch(logout());
+
+        console.log("after dispatch logout");
+
+        // Redirect to login or home page 
+        navigate('/authentication/login');
+    }
 
     return (
         <Disclosure as="nav" className="bg-gray-800">
@@ -94,7 +111,12 @@ export default function NavBar() {
                                     >
                                         {userNavigation.map((item) => (
                                             <MenuItem key={item.name}>
-                                                <a href={item.href} className="block px-4 py-2 text-sm text-gray-700 data-[focus]:bg-gray-100">
+                                                <a
+                                                    href={item.href}
+                                                    onClick={item.name === 'Logout' ? async (e: React.MouseEvent) => {
+                                                        handleLogout();
+                                                    } : undefined}
+                                                    className="block px-4 py-2 text-sm text-gray-700 data-[focus]:bg-gray-100">
                                                     {item.name}
                                                 </a>
                                             </MenuItem>
@@ -119,26 +141,8 @@ export default function NavBar() {
                                 item.current ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white',
                                 'block rounded-md px-3 py-2 text-base font-medium',
                             )}
-                            onClick={item.name === 'Logout' ? async (e: React.MouseEvent) => {
-                                e.preventDefault(); // Prevent default anchor behavior
-
-                                // Dispatch logout action
-                                dispatch(logout());
-
-                                // Clear tokens from localStorage
-                                localStorage.removeItem('accessToken');
-                                localStorage.removeItem('refreshToken');
-
-                                // Clear persisted state
-                                await persistor.purge();
-
-                                // Optionally, clear any other related persisted keys manually
-                                localStorage.removeItem('persist:auth');
-
-                                // Redirect to login or home page
-                                window.location.href = '/login'; // Or use a navigation method if using react-router-dom
-                                // Dispatch logout action
-                                dispatch(logout());
+                            onClick={item.name === 'Logout' ? async (_e: React.MouseEvent) => {
+                                handleLogout();
                             } : undefined}
                         >
                             {item.name}
@@ -171,6 +175,9 @@ export default function NavBar() {
                                 key={item.name}
                                 as="a"
                                 href={item.href}
+                                onClick={item.name === 'Logout' ? async (_e: React.MouseEvent) => {
+                                    handleLogout();
+                                } : undefined}
                                 className="block rounded-md px-3 py-2 text-base font-medium text-gray-400 hover:bg-gray-700 hover:text-white"
                             >
                                 {item.name}

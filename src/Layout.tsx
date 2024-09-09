@@ -27,6 +27,8 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
         try {
             if (userData) {
                 dispatch(setUserInformation(userData as IUserInformation));
+            } else {
+                persistor.purge();
             }
 
             if (!auth.user && accessToken && refreshToken) {

@@ -1,6 +1,18 @@
-# Work in Progress !
+# Frontend Todo App
+For the backend https://github.com/Avicted/todo_app_dotnetcore_backend
 
-# React + TypeScript + Vite
+```bash
+# Install dependencies
+npm install
+
+# Run the development server
+npm run dev
+```
+
+---
+# Vite Documentation
+
+## React + TypeScript + Vite
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 

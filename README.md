@@ -1,12 +1,33 @@
 # Frontend Todo App
 For the backend https://github.com/Avicted/todo_app_dotnetcore_backend
 
+Todo App with React, TypeScript, Vite, and Tailwind CSS.
+
+## Features
+- Create new todo items
+- Update todo items
+- Delete todo items
+- View all todo items that belong to the user
+- Authentication with the backend
+
+## Testing
+- Playwright for end-to-end testing of the frontend
+
+---
+
+## How to run the project
 ```bash
 # Install dependencies
 npm install
 
 # Run the development server
 npm run dev
+
+# End-to-end testing with Playwright
+npx playwright test --ui
+
+# or
+npm run test
 ```
 
 ![Todo Items Page](Screenshot_TodoItems.png "Todo Items Page")

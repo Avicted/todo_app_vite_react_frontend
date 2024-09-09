@@ -1,9 +1,9 @@
 import { Disclosure, DisclosureButton, DisclosurePanel, Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react'
 import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline'
-import { useAppSelector, useAppDispatch } from './hooks'
+import { useAppSelector, useAppDispatch } from '../hooks'
 import { Link, useNavigate } from 'react-router-dom'
-import { logout } from './features/authentication/authenticationSlice'
-import { persistor } from './store'
+import { logout } from '../features/authentication/authenticationSlice'
+import { persistor } from '../store'
 
 const navigation = [
     { name: 'Home', href: '/', current: true },

@@ -1,12 +1,12 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import './App.css';
-import Layout from './Layout';
+import Layout from './components/Layout';
 import AuthenticationPage from './features/authentication/AuthenticationPage';
 import Login from './features/authentication/Login';
 import Register from './features/authentication/Register';
 import { HomePage } from './features/homepage/home';
 import Todos from './features/todo/TodosPage';
-import ErrorBoundary from './ErrorBoundry';
+import ErrorBoundary from './components/ErrorBoundry';
 
 function App() {
   return (

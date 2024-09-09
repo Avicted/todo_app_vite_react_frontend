@@ -1,9 +1,9 @@
 import React, { useEffect } from 'react';
 import NavBar from './NavBar';
 import { useDispatch } from 'react-redux';
-import { useGetOwnDetailsQuery, useRefreshMutation } from './services/AuthenticationAPI';
-import { useAuth } from './hooks';
-import { IUser, login } from './features/authentication/authenticationSlice';
+import { useGetOwnDetailsQuery, useRefreshMutation } from '../services/AuthenticationAPI';
+import { useAuth } from '../hooks';
+import { IUser, login } from '../features/authentication/authenticationSlice';
 
 const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     const auth = useAuth();

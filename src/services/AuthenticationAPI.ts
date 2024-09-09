@@ -68,6 +68,7 @@ export const baseQueryWithReauth = async (args: string | FetchArgs, api: BaseQue
 export const authenticationAPI = createApi({
     reducerPath: 'authenticationAPI',
     baseQuery: baseQueryWithReauth,
+    tagTypes: ['User'],
     endpoints: (builder) => {
         return ({
             login: builder.mutation<IUser, ILoginRequest>({
@@ -77,6 +78,8 @@ export const authenticationAPI = createApi({
                     method: 'POST',
                     body,
                 }),
+                // Invalidate the 'User' tag after login, forcing refetch of user details
+                invalidatesTags: ['User'],
             }),
             register: builder.mutation<IUser, IRegisterNewUserRequest>({
                 query: (body) => ({
@@ -95,7 +98,8 @@ export const authenticationAPI = createApi({
             getOwnDetails: builder.query<IUserInformation, null>({
                 query: () => ({
                     url: '/users/getowndetails',
-                })
+                }),
+                providesTags: ['User']
             }),
         })
     }}

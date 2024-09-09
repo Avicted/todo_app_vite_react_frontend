@@ -1,17 +1,23 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useAppDispatch } from "../../hooks";
-import { APIError, IUser, login } from "./authenticationSlice";
-import { useLoginMutation } from "../../services/AuthenticationAPI";
+import { APIError, IUser, login, setUserInformation } from "./authenticationSlice";
+import { authenticationAPI, useGetOwnDetailsQuery, useLoginMutation } from "../../services/AuthenticationAPI";
 import { useNavigate } from "react-router-dom";
+import { todo } from "node:test";
+import { todoAPI } from "../../services/TodoAPI";
 
 export default function Login() {
     const dispatch = useAppDispatch();
     const navigate = useNavigate();
 
-    const [loginRequest] = useLoginMutation(); // Use login mutation hook
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [errors, setErrors] = useState<string[]>([]);
+    const [loginRequest] = useLoginMutation();
+
+    const { data: userDetails, refetch: refetchUserDetails, isUninitialized } = useGetOwnDetailsQuery(null, {
+        skip: !localStorage.getItem('accessToken'), // Skip unless accessToken is available
+    });
 
     // Handle input changes for email and password
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -26,45 +32,51 @@ export default function Login() {
     // Handle login request
     const handleLoginRequest = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
+        setErrors([]); // Clear previous errors
 
         try {
-            const user: IUser = await loginRequest({ email, password }).unwrap(); // Unwrap to handle promise rejection
-            // dispatch(login(user as IUser)); // Dispatch the user data to the store
+            const user: IUser = await loginRequest({ email, password }).unwrap();
+
+            localStorage.setItem('accessToken', user.accessToken as string);
+
+            // Manually invalidate and reset cache for user details and the todo list
+            dispatch(authenticationAPI.util.resetApiState());
+            dispatch(todoAPI.util.resetApiState());
 
             dispatch(login({
-                accessToken: user.accessToken, refreshToken: user.refreshToken,
                 id: user.id,
+                accessToken: user.accessToken,
+                refreshToken: user.refreshToken,
                 email: user.email,
-                tokenType: user.tokenType,
-                expiresIn: user.expiresIn
+                tokenType: "Bearer",
             }));
 
-            console.log('User:', user);
+            console.log({ 'setUserInformation': { id: user.id, email: user.email } })
 
-            navigate("/")
+            dispatch(setUserInformation({ id: user.id, email: user.email }));
+
+            if (!isUninitialized) refetchUserDetails(); // Ensure it fetches fresh user data
+
+            console.log('User logged in:', user);
+            navigate('/'); // Navigate to home after login
         } catch (err) {
             if (err && typeof err === 'object' && 'data' in err) {
                 const apiError: APIError = err as APIError;
                 console.error('Login request failed:', apiError);
-
-                // Access the errors field within the data object
-                if (apiError.data.errors) {
-                    for (const [key, messages] of Object.entries(apiError.data.errors)) {
-                        messages.forEach(message => {
-                            console.error(`${key}: ${message}`)
-
-                            // Add the error message to the errors state
-                            setErrors([...errors, `${key}: ${message}`]);
-                        });
-                    }
-                } else {
-                    console.error(`Error ${apiError.data.status}: ${apiError.data.title}`);
-                }
+                setErrors(["Wrong email or password"]);
             } else {
                 console.error('Unexpected error:', err);
             }
         }
     };
+
+    useEffect(() => {
+        if (userDetails) {
+            // Dispatch user details to Redux
+            dispatch(setUserInformation(userDetails));
+            console.log('User details:', userDetails);
+        }
+    }, [userDetails, isUninitialized, dispatch]);
 
     return (
         <>

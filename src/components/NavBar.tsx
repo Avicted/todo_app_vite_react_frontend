@@ -8,6 +8,8 @@ import { persistor } from '../store'
 const navigation = [
     { name: 'Home', href: '/', current: true },
     { name: 'Todos', href: '/todos', current: false, requiresAuth: true },
+    { name: 'Login', href: '/authentication/login', current: false, requiresAuth: false },
+    { name: 'Register', href: '/authentication/register', current: false, requiresAuth: false },
 ]
 const userNavigation = [
     // { name: 'Your Profile', href: '#' },
@@ -72,6 +74,13 @@ export default function NavBar() {
                                                 item.current ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white',
                                                 'rounded-md px-3 py-2 text-sm font-medium',
                                             )}
+                                            onClick={() => {
+                                                // set curent to true for the clicked item, and false for the rest
+                                                navigation.forEach((navItem) => {
+                                                    navItem.current = false
+                                                });
+                                                item.current = true;
+                                            }}
                                         >
                                             {item.name}
                                         </Link>)}

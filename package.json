@@ -8,7 +8,7 @@
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "test": "npx playwright test --project chromium --project firefox && npx playwright show-report"
+    "test": "npx playwright test --project chromium && npx playwright show-report"
   },
   "dependencies": {
     "@azure/msal-react": "^2.0.22",

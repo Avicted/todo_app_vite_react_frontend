@@ -14,10 +14,11 @@ export const todoAPI = createApi({
     tagTypes: ['Todo'],
     endpoints: (builder) => ({
         getTodos: builder.query<TodoResponse, string>({
-            query: () => 'todos',
-            providesTags: ['Todo']
+            query: () => ({
+                url: '/todos',
+                invalidatesTags: ['Todo'],
+            })
         }),
-
         addTodo: builder.mutation<ITodoItem, Partial<ITodoItem>>({
             query: (body) => ({
                 url: '/todos',

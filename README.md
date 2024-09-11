@@ -1,5 +1,7 @@
 # Frontend Todo App
-For the backend https://github.com/Avicted/todo_app_dotnetcore_backend
+Backend (C# Dotnet Core) for this project can be found here:
+
+https://github.com/Avicted/todo_app_dotnetcore_backend
 
 Todo App with React, TypeScript, Vite, and Tailwind CSS.
 

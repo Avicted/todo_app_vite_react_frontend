@@ -1,13 +1,8 @@
 import { Link } from "react-router-dom"
 import { useAppSelector } from "../../hooks";
-import { useEffect } from "react";
 
 export const HomePage = () => {
     const user = useAppSelector((state) => state.authentication.user);
-
-    useEffect(() => {
-
-    }, [user, user?.email]);
 
     return (
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">

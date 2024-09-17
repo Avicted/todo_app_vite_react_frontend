@@ -32,6 +32,12 @@ npx playwright test --ui
 npm run test
 ```
 
+## Docker that can interact with the backend
+```bash
+docker network create shared-network
+docker-compose up
+```
+
 ![Todo Items Page](Screenshot_TodoItems.png "Todo Items Page")
 ![New Todo Item Modal](Screenshot_New_TodoItem.png "New Todo Item Modal")
 

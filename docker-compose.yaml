@@ -1,0 +1,14 @@
+services:
+    todo-app:
+        build:
+            context: .
+            dockerfile: Dockerfile
+        networks:
+            - shared-network
+        ports:
+            - "80:80"
+        restart: always
+
+networks:
+    shared-network:
+        external: true

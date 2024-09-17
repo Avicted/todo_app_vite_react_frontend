@@ -7,8 +7,11 @@ export const usersAPI = createApi({
     reducerPath: 'userAPI',
     baseQuery: baseQueryWithReauth,
     endpoints: (builder) => ({
-        getUserById: builder.query<IUserInformation, {id: string}>({
-            query: ({ id }) => `/users/${id}`,
+        getUserById: builder.query<IUserInformation, { id: string }>({
+            query: ({ id }) => ({
+                url: `/users/${id}`,
+                invalidatesTags: ['Todo'],
+            })
         }),
     })
 })

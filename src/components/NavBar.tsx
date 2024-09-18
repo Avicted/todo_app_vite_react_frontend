@@ -2,9 +2,11 @@ import { Disclosure, DisclosureButton, DisclosurePanel, Menu, MenuButton, MenuIt
 import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline';
 import { useAppSelector, useAppDispatch } from '../hooks';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { logout } from '../features/authentication/authenticationSlice';
 import { persistor } from '../store';
 import { useEffect, useState } from 'react';
+import { authenticationAPI } from '../services/AuthenticationAPI';
+import { todoAPI } from '../services/TodoAPI';
+import { logout } from '../features/authentication/authenticationSlice';
 
 
 
@@ -32,12 +34,20 @@ export default function NavBar() {
     const handleLogout = async () => {
         console.log("Logging out user");
 
-        // Clear persisted state
-        await persistor.purge();
+        // Manually invalidate and reset cache for user details and the todo list
+        dispatch(authenticationAPI.util.resetApiState());
+        dispatch(todoAPI.util.resetApiState());
+
+        // Clear specific persisted data
+        const stateToClear = ['user', 'todos']; // Adjust according to your slices
+        stateToClear.forEach(key => {
+            localStorage.removeItem(`persist:${key}`);
+        });
+
+        persistor.purge(); // Clear the persisted state
+        console.log("after dispatch logout");
 
         dispatch(logout());
-
-        console.log("after dispatch logout");
 
         navigate('/authentication/login');
     };

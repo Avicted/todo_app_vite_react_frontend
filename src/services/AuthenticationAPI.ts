@@ -3,26 +3,26 @@ import { BaseQueryApi, createApi, FetchArgs, fetchBaseQuery } from '@reduxjs/too
 import { ILoginRequest, IRefreshTokenRequest, IRefreshTokenResponse, IRegisterNewUserRequest, IUser, IUserInformation } from '../features/authentication/authenticationSlice'
 
 
- // Helper function to refresh token
- export async function refreshAccessToken() {
+// Helper function to refresh token
+export async function refreshAccessToken() {
     const refreshToken = localStorage.getItem('refreshToken')
     if (refreshToken) {
-      const response = await fetch('http://localhost:1337/api/refresh', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ refreshToken }),
-      })
+        const response = await fetch('http://localhost:1337/api/refresh', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ refreshToken }),
+        })
 
-      console.log('Refresh token response:', response)
+        console.log('Refresh token response:', response)
 
-      if (response.ok) {
-        const data = await response.json()
-        console.log('Refresh token data:', data)
-        localStorage.setItem('accessToken', data.accessToken)
-        return data.accessToken
-      }
+        if (response.ok) {
+            const data = await response.json()
+            console.log('Refresh token data:', data)
+            localStorage.setItem('accessToken', data.accessToken)
+            return data.accessToken
+        }
     }
     return null
 }
@@ -30,37 +30,37 @@ import { ILoginRequest, IRefreshTokenRequest, IRefreshTokenResponse, IRegisterNe
 // Custom baseQuery with token refresh logic
 export const baseQueryWithReauth = async (args: string | FetchArgs, api: BaseQueryApi, extraOptions: {}) => {
     let accessToken = localStorage.getItem('accessToken')
-  
+
     console.log('AuthenticationAPI Access Token:', accessToken); // Log token for debugging
-  
+
     const result = await fetchBaseQuery({
-      baseUrl: 'http://localhost:1337/api',
-      prepareHeaders: (headers) => {
-        if (accessToken) {
-          headers.set('Authorization', `Bearer ${accessToken}`)
-        }
-        return headers
-      },
-    })(args, api, extraOptions)
-  
-    if (result?.error?.status === 401) {
-      // return result;
-
-      const newAccessToken = await refreshAccessToken()
-      if (newAccessToken) {
-        accessToken = newAccessToken
-        localStorage.setItem('accessToken', newAccessToken)
-
-        return fetchBaseQuery({
-          baseUrl: 'http://localhost:1337/api',
-          prepareHeaders: (headers) => {
-            headers.set('Authorization', `Bearer ${accessToken}`)
+        baseUrl: 'http://localhost:1337/api',
+        prepareHeaders: (headers) => {
+            if (accessToken) {
+                headers.set('Authorization', `Bearer ${accessToken}`)
+            }
             return headers
-          },
-        })(args, api, extraOptions)
-      }
+        },
+    })(args, api, extraOptions)
+
+    if (result?.error?.status === 401) {
+        // return result;
+
+        const newAccessToken = await refreshAccessToken()
+        if (newAccessToken) {
+            accessToken = newAccessToken
+            localStorage.setItem('accessToken', newAccessToken)
+
+            return fetchBaseQuery({
+                baseUrl: 'http://localhost:1337/api',
+                prepareHeaders: (headers) => {
+                    headers.set('Authorization', `Bearer ${accessToken}`)
+                    return headers
+                },
+            })(args, api, extraOptions)
+        }
     }
-  
+
     return result
 }
 
@@ -68,7 +68,7 @@ export const baseQueryWithReauth = async (args: string | FetchArgs, api: BaseQue
 export const authenticationAPI = createApi({
     reducerPath: 'authenticationAPI',
     baseQuery: baseQueryWithReauth,
-    tagTypes: ['User'],
+    tagTypes: ['Auth'],
     endpoints: (builder) => {
         return ({
             login: builder.mutation<IUser, ILoginRequest>({
@@ -78,8 +78,7 @@ export const authenticationAPI = createApi({
                     method: 'POST',
                     body,
                 }),
-                // Invalidate the 'User' tag after login, forcing refetch of user details
-                invalidatesTags: ['User'],
+                invalidatesTags: ['Auth'],
             }),
             register: builder.mutation<IUser, IRegisterNewUserRequest>({
                 query: (body) => ({
@@ -94,20 +93,21 @@ export const authenticationAPI = createApi({
                     method: 'POST',
                     body,
                 }),
+                invalidatesTags: ['Auth'],
             }),
             getOwnDetails: builder.query<IUserInformation, null>({
                 query: () => ({
                     url: '/users/getowndetails',
                 }),
-                providesTags: ['User']
+                providesTags: ['Auth']
             }),
         })
-    }}
+    }
+}
 )
-  
+
 
 // Export hooks for usage in functional components, which are
 // auto-generated based on the defined endpoints
 export const { useLoginMutation, useRegisterMutation, useRefreshMutation, useGetOwnDetailsQuery } = authenticationAPI
 
-    

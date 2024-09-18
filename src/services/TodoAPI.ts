@@ -24,6 +24,7 @@ export const todoAPI = createApi({
                 url: '/todos',
                 method: 'POST',
                 body,
+                invalidatesTags: ['Todo'],
             }),
         }),
         updateTodo: builder.mutation<ITodoItem, { id: number, data: Partial<ITodoItem> }>({
@@ -31,12 +32,14 @@ export const todoAPI = createApi({
                 url: `/todos/${id}`,
                 method: 'PUT',
                 body: data,
+                invalidatesTags: ['Todo'],
             }),
         }),
         removeTodo: builder.mutation<void, number>({
             query: (id) => ({
                 url: `/todos/${id}`,
                 method: 'DELETE',
+                invalidatesTags: ['Todo'],
             }),
         }),
     }),

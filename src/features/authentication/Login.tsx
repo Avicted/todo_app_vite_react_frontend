@@ -4,6 +4,7 @@ import { APIError, IUser, login, setUserInformation } from "./authenticationSlic
 import { authenticationAPI, useGetOwnDetailsQuery, useLoginMutation } from "../../services/AuthenticationAPI";
 import { useNavigate } from "react-router-dom";
 import { todoAPI } from "../../services/TodoAPI";
+import { persistor } from "../../store";
 
 export default function Login() {
     const dispatch = useAppDispatch();
@@ -41,6 +42,14 @@ export default function Login() {
             // Manually invalidate and reset cache for user details and the todo list
             dispatch(authenticationAPI.util.resetApiState());
             dispatch(todoAPI.util.resetApiState());
+
+            // Clear specific persisted data
+            const stateToClear = ['user', 'todos']; // Adjust according to your slices
+            stateToClear.forEach(key => {
+                localStorage.removeItem(`persist:${key}`);
+            });
+
+            persistor.purge(); // Clear the persisted state
 
             dispatch(login({
                 id: user.id,

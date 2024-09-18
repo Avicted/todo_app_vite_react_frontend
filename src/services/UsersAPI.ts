@@ -6,11 +6,12 @@ import { IUserInformation } from '../features/authentication/authenticationSlice
 export const usersAPI = createApi({
     reducerPath: 'userAPI',
     baseQuery: baseQueryWithReauth,
+    tagTypes: ['User'],
     endpoints: (builder) => ({
         getUserById: builder.query<IUserInformation, { id: string }>({
             query: ({ id }) => ({
                 url: `/users/${id}`,
-                invalidatesTags: ['Todo'],
+                invalidatesTags: ['Todo', 'User'],
             })
         }),
     })

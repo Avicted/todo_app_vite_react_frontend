@@ -1,5 +1,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import type { RootState } from '../../store'
+import { PURGE } from 'redux-persist';
+import { IAuthState } from '../authentication/authenticationSlice';
 
 export enum TodoItemStatus {
     NotStarted = 0,
@@ -24,12 +26,12 @@ export interface IUpdateTodoItem extends ICreateTodoItem { }
 
 
 // Define a type for the slice state
-interface TodoState {
+interface ITodoState {
     items: ITodoItem[]
 }
 
 // Define the initial state using that type
-const initialState: TodoState = {
+const initialState: ITodoState = {
     items: [],
 }
 
@@ -59,6 +61,11 @@ export const todoSlice = createSlice({
             // Remove the todo with the given id
             state.items = state.items.filter((todo) => todo.id !== id)
         },
+    },
+    extraReducers: (builder: { addCase: (arg0: string, arg1: () => ITodoState) => void; }) => {
+        builder.addCase(PURGE, () => {
+            return initialState;
+        });
     },
 })
 

@@ -1,7 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import type { RootState } from '../../store'
 import { PURGE } from 'redux-persist';
-import { IAuthState } from '../authentication/authenticationSlice';
 
 export enum TodoItemStatus {
     NotStarted = 0,
@@ -64,6 +63,7 @@ export const todoSlice = createSlice({
     },
     extraReducers: (builder: { addCase: (arg0: string, arg1: () => ITodoState) => void; }) => {
         builder.addCase(PURGE, () => {
+            console.log('Purging the todo state !!!');
             return initialState;
         });
     },

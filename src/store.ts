@@ -5,7 +5,7 @@ import { setupListeners } from '@reduxjs/toolkit/query'
 import authenticationSlice from './features/authentication/authenticationSlice'
 import { authenticationAPI } from './services/AuthenticationAPI'
 import { usersAPI } from './services/UsersAPI'
-import { persistReducer, persistStore } from 'redux-persist';
+import { FLUSH, PAUSE, PERSIST, persistReducer, persistStore, PURGE, REGISTER, REHYDRATE } from 'redux-persist';
 import storage from 'redux-persist/lib/storage'; // defaults to localStorage
 
 
@@ -34,52 +34,50 @@ export const rtkQueryErrorLogger: Middleware =
     }
 
     return next(action)
-}
+  }
 
-// Persist config for the authentication slice
+// Persist state in localStorage
 const persistConfig = {
-  key: 'auth',        // key for storing in localStorage
-  storage,            // localStorage (you can replace this with sessionStorage if needed)
-  whitelist: [
-    'authentication', // only persist the authentication slice
-    'user',           // only persist the user slice
-  ],
+  key: 'root',
+  storage,
 };
 
 // Wrap the authentication slice with the persisted reducer
-const persistedAuthenticationReducer = persistReducer(persistConfig, authenticationSlice);
+const persistedAuthReducer = persistReducer(persistConfig, authenticationSlice);
+const persistedTodoReducer = persistReducer(persistConfig, todoSlice);
 
 export const store = configureStore({
   reducer: {
-    todoAPI: todoAPI.reducer,
-    todos: todoSlice,
-
     usersAPI: usersAPI.reducer,
-    
-    authenticationAPI: authenticationAPI.reducer,
-    authentication: persistedAuthenticationReducer, // Use persisted reducer
+    [usersAPI.reducerPath]: usersAPI.reducer,
+
+    authentication: persistedAuthReducer,
+    [authenticationAPI.reducerPath]: authenticationAPI.reducer,
+
+    todoAPI: todoAPI.reducer,
+    todos: persistedTodoReducer,
   },
 
   // Adding the api middleware enables caching, invalidation, polling,
   // and other useful features of `rtk-query`.
   middleware: (getDefaultMiddleware: any) =>
     getDefaultMiddleware({
-        serializableCheck: false, /*{ @Note(Victor): Redux-persist problem
-            ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
-        },*/
+      serializableCheck: {
+        ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
+      },
     })
-    .concat(todoAPI.middleware)
-    .concat(authenticationAPI.middleware)
-    .concat(usersAPI.middleware)
-    .concat(rtkQueryErrorLogger),
+      .concat(todoAPI.middleware)
+      .concat(authenticationAPI.middleware)
+      .concat(usersAPI.middleware)
+      .concat(rtkQueryErrorLogger),
 })
 
 // @Note(Victor): This is a workaround to clear the localStorage when the user logs out
 store.subscribe(() => {
-    const state = store.getState();
-    if (state.authentication.user === null) {
-        storage.removeItem('persist:root');
-    }
+  const state = store.getState();
+  if (state.authentication.user === null) {
+    storage.removeItem('persist:root');
+  }
 });
 
 // optional, but required for refetchOnFocus/refetchOnReconnect behaviors

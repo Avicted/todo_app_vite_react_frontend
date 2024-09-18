@@ -116,8 +116,9 @@ export const authenticationSlice = createSlice({
             }
         },
     },
-    extraReducers: (builder: { addCase: (arg0: string, arg1: () => IAuthState) => void; }) => {
+    extraReducers: (builder) => {
         builder.addCase(PURGE, () => {
+            console.log('Purging the auth state !!!');
             return initialState;
         });
     },

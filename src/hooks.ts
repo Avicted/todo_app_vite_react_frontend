@@ -11,8 +11,7 @@ export const useAppSelector = useSelector.withTypes<RootState>()
 export const useAuth = () => {
     // Access the current user from the Redux store
     const user = useSelector(selectCurrentUser);
-  
+
     // Memoize the object containing the user
     return useMemo(() => ({ user }), [user]);
 };
-  

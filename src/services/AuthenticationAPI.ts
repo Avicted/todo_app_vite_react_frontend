@@ -7,7 +7,7 @@ import { ILoginRequest, IRefreshTokenRequest, IRefreshTokenResponse, IRegisterNe
 export async function refreshAccessToken() {
     const refreshToken = localStorage.getItem('refreshToken')
     if (refreshToken) {
-        const response = await fetch('http://localhost:1337/api/refresh', {
+        const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/refresh`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -34,7 +34,7 @@ export const baseQueryWithReauth = async (args: string | FetchArgs, api: BaseQue
     console.log('AuthenticationAPI Access Token:', accessToken); // Log token for debugging
 
     const result = await fetchBaseQuery({
-        baseUrl: 'http://localhost:1337/api',
+        baseUrl: `${import.meta.env.VITE_API_BASE_URL}`,
         prepareHeaders: (headers) => {
             if (accessToken) {
                 headers.set('Authorization', `Bearer ${accessToken}`)
@@ -52,7 +52,7 @@ export const baseQueryWithReauth = async (args: string | FetchArgs, api: BaseQue
             localStorage.setItem('accessToken', newAccessToken)
 
             return fetchBaseQuery({
-                baseUrl: 'http://localhost:1337/api',
+                baseUrl: `${import.meta.env.VITE_API_BASE_URL}`,
                 prepareHeaders: (headers) => {
                     headers.set('Authorization', `Bearer ${accessToken}`)
                     return headers

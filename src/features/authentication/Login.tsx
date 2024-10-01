@@ -90,11 +90,6 @@ export default function Login() {
         <>
             <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
                 <div className="sm:mx-auto sm:w-full sm:max-w-sm">
-                    <img
-                        alt="Your Company"
-                        src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=500"
-                        className="mx-auto h-10 w-auto"
-                    />
                     <h2 className="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-white">
                         Sign in to your account
                     </h2>
@@ -124,11 +119,11 @@ export default function Login() {
                                 <label htmlFor="password" className="block text-sm font-medium leading-6 text-white">
                                     Password
                                 </label>
-                                <div className="text-sm">
+                                {/*<div className="text-sm">
                                     <a href="#" className="font-semibold text-indigo-400 hover:text-indigo-300">
                                         Forgot password?
                                     </a>
-                                </div>
+                                </div>*/}
                             </div>
                             <div className="mt-2">
                                 <input
